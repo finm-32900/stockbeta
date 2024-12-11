@@ -1,8 +1,15 @@
 import argparse
+import logging
+
 import pandas as pd
 import yfinance as yf
-from .core import calculate_factor_exposures
-from .factors import load_factors
+
+from stockbeta.core import calculate_factor_exposures, load_archived_data
+from stockbeta.factors import load_factors
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def format_report(ticker: str, stats: dict) -> str:
     """Format the statistics into a readable report."""
@@ -15,9 +22,10 @@ def format_report(ticker: str, stats: dict) -> str:
         "\nFactor Exposures:",
         f"Market Beta: {stats['market_beta']:.3f}",
         f"Size Factor (SMB) Beta: {stats['smb_beta']:.3f}",
-        f"Value Factor (HML) Beta: {stats['hml_beta']:.3f}"
+        f"Value Factor (HML) Beta: {stats['hml_beta']:.3f}",
     ]
     return "\n".join(report)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Calculate stock factor exposures and statistics.")
@@ -29,10 +37,9 @@ def main():
     # Load factor data
     try:
         factors = load_factors(start=args.start, end=args.end)
-    except Exception as e:
-        print(f"Error loading online data: {e}")
-        print("Falling back to archived data...")
-        from .core import load_archived_data
+    except (ConnectionError, ValueError) as e:
+        logger.warning("Error loading online data: %s", e)
+        logger.info("Falling back to archived data...")
         factors = load_archived_data()
 
     # Download stock data
@@ -46,8 +53,8 @@ def main():
 
     # Calculate statistics and generate report
     stats = calculate_factor_exposures(stock_returns, factors)
-    report = format_report(args.ticker, stats)
-    print(report)
+    logger.info(format_report(args.ticker, stats))
+
 
 if __name__ == "__main__":
     main()

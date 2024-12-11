@@ -121,44 +121,6 @@ print(f"Value Factor Beta: {stats['hml_beta']:.3f}")
 print(f"Annual Sharpe Ratio: {stats['sharpe_ratio']:.2f}")
 ```
 
-## API Reference
-
-### calculate_factor_exposures
-
-The `calculate_factor_exposures` function returns a dictionary containing:
-- `average_return`: Annualized average return (float)
-- `volatility`: Annualized return volatility (float)
-- `sharpe_ratio`: Annualized Sharpe ratio (float)
-- `market_beta`: Beta with respect to market excess returns (float)
-- `smb_beta`: Beta with respect to size factor (float)
-- `hml_beta`: Beta with respect to value factor (float)
-
-### load_factors
-
-The `load_factors` function accepts:
-- `start`: Optional start date (str or datetime) in 'YYYY-MM-DD' format
-- `end`: Optional end date (str or datetime) in 'YYYY-MM-DD' format
-
-Returns a pandas DataFrame with daily factor returns.
-
-## Error Handling
-
-The package includes fallback mechanisms for data loading:
-
-```python
-try:
-    # Try loading online data first
-    factors = stockbeta.load_factors(start="2020-01-01", end="2023-12-31")
-except Exception:
-    # Fall back to archived data if online loading fails
-    factors = stockbeta.load_archived_data()
-```
-
-Common errors:
-- Network connectivity issues when loading online data
-- Invalid date ranges
-- Missing data for specific dates
-
 ## License
 
 `stockbeta` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
@@ -197,6 +159,20 @@ hatch run test
 To run type checking:
 ```console
 hatch run types:check
+```
+
+### Formatting and Linting
+
+You can use `hatch fmt` to format your Python code. This uses Ruff under the hood. 
+
+```bash
+hatch fmt
+```
+Hatch's formatter supports configuration options such as quote style, indent style, and line width through the project's configuration file. However, it's worth noting that if you need to both sort imports and format code, you'll need to run two commands:
+
+```bash
+hatch fmt --check  # for formatting
+hatch lint        # for import sorting and other linting
 ```
 
 ### Development Tips
