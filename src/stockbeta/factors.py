@@ -1,8 +1,14 @@
 """Functions for loading factor data from Ken French's data library."""
 
-import pandas_datareader.data as web
+from typing import Optional, Union
+from datetime import datetime
+import pandas as pd
+import pandas_datareader.data as web  # type: ignore
 
-def load_factors(start=None, end=None):
+def load_factors(
+    start: Optional[Union[str, datetime]] = None,
+    end: Optional[Union[str, datetime]] = None
+) -> pd.DataFrame:
     """
     Load Fama/French 3 Factors (Daily) from Ken French's data library.
     
