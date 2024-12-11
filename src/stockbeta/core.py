@@ -10,13 +10,13 @@ def load_archived_data():
     df = pd.read_parquet(data_path)
     return df
 
-def calculate_beta(stock_returns, factor_returns):
+def calculate_beta(stock_returns: pd.Series, factor_returns: pd.Series) -> float:
     """Calculate beta with respect to any factor."""
     cov = np.cov(stock_returns, factor_returns)[0, 1]
     var = np.var(factor_returns)
     return cov / var
 
-def calculate_sharpe_ratio(returns, risk_free_rate):
+def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: pd.Series) -> float:
     """Calculate the Sharpe ratio for a series of returns."""
     excess_returns = returns - risk_free_rate
     return np.mean(excess_returns) / np.std(excess_returns)

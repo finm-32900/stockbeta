@@ -9,6 +9,12 @@
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Loading Factor Data](#loading-factor-data)
+  - [Factor Analysis Reports](#factor-analysis-reports)
+    - [Command Line Interface](#command-line-interface)
+    - [Python Library Usage](#python-library-usage)
+- [API Reference](#api-reference)
+- [Error Handling](#error-handling)
 - [License](#license)
 - [Development](#development)
 
@@ -54,6 +60,105 @@ factors['Mkt'] = factors['Mkt-RF'] + factors['RF']
 print(factors.describe())
 ```
 
+### Factor Analysis Reports
+
+You can analyze a stock's factor exposures in two ways:
+
+#### Command Line Interface
+
+The package provides a CLI tool for quick factor analysis:
+
+```console
+python -m stockbeta.cli --ticker AAPL --start 2020-01-01 --end 2023-12-31
+```
+
+This will output a report like:
+```
+Factor Analysis Report for AAPL
+========================================
+Average Annual Return: 23.45%
+Annual Volatility: 28.32%
+Sharpe Ratio: 0.83
+
+Factor Exposures:
+Market Beta: 1.142
+Size Factor (SMB) Beta: -0.234
+Value Factor (HML) Beta: -0.456
+```
+
+#### Python Library Usage
+
+You can also generate factor analysis reports programmatically:
+
+```python
+import stockbeta
+import yfinance as yf
+
+# Download stock data
+ticker = "AAPL"
+stock_data = yf.download(ticker, start="2020-01-01", end="2023-12-31", progress=False)
+stock_returns = stock_data["Adj Close"].pct_change().dropna()
+
+# Load factor data (will try online first, then fall back to archived data)
+try:
+    factors = stockbeta.load_factors(start="2020-01-01", end="2023-12-31")
+except Exception:
+    factors = stockbeta.load_archived_data()
+
+# Align dates and calculate factor exposures
+import pandas as pd
+combined = pd.concat([stock_returns, factors], axis=1, join="inner")
+stock_returns = combined.iloc[:, 0]
+factors = combined.iloc[:, 1:]
+
+# Get factor analysis statistics
+stats = stockbeta.calculate_factor_exposures(stock_returns, factors)
+
+# Access individual statistics
+print(f"Market Beta: {stats['market_beta']:.3f}")
+print(f"Size Factor Beta: {stats['smb_beta']:.3f}")
+print(f"Value Factor Beta: {stats['hml_beta']:.3f}")
+print(f"Annual Sharpe Ratio: {stats['sharpe_ratio']:.2f}")
+```
+
+## API Reference
+
+### calculate_factor_exposures
+
+The `calculate_factor_exposures` function returns a dictionary containing:
+- `average_return`: Annualized average return (float)
+- `volatility`: Annualized return volatility (float)
+- `sharpe_ratio`: Annualized Sharpe ratio (float)
+- `market_beta`: Beta with respect to market excess returns (float)
+- `smb_beta`: Beta with respect to size factor (float)
+- `hml_beta`: Beta with respect to value factor (float)
+
+### load_factors
+
+The `load_factors` function accepts:
+- `start`: Optional start date (str or datetime) in 'YYYY-MM-DD' format
+- `end`: Optional end date (str or datetime) in 'YYYY-MM-DD' format
+
+Returns a pandas DataFrame with daily factor returns.
+
+## Error Handling
+
+The package includes fallback mechanisms for data loading:
+
+```python
+try:
+    # Try loading online data first
+    factors = stockbeta.load_factors(start="2020-01-01", end="2023-12-31")
+except Exception:
+    # Fall back to archived data if online loading fails
+    factors = stockbeta.load_archived_data()
+```
+
+Common errors:
+- Network connectivity issues when loading online data
+- Invalid date ranges
+- Missing data for specific dates
+
 ## License
 
 `stockbeta` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
@@ -78,16 +183,11 @@ cd stockbeta-example
 hatch shell
 ```
 
-This will automatically install all dependencies and the package in editable mode. You can now import and use the package in Python:
-
-```python
-import stockbeta
-factors = stockbeta.load_factors()
-```
+This will automatically install all dependencies and the package in editable mode.
 
 ### Running Tests
 
-To run tests (once implemented):
+To run tests:
 ```console
 hatch run test
 ```
@@ -105,14 +205,3 @@ hatch run types:check
 - No need to manually install in editable mode (`pip install -e .`) as Hatch handles this
 - Any changes you make to the source code will be immediately reflected when you import the package
 - To exit the Hatch shell environment, simply type `exit`
-```
-
-This should be inserted before the License section in the README.md. The instructions reference the project configuration that's already in your `pyproject.toml` (see lines 39-44 for the types configuration).
-
-The development instructions cover:
-1. Setting up the development environment
-2. Using Hatch for development
-3. Running tests and type checking
-4. Tips for development workflow
-
-Note that I see you have mypy configured in your `pyproject.toml` (lines 39-44), which is why I included the type checking instructions. The configuration also shows coverage setup (lines 46-63), though you might want to add test files and a test runner configuration if you haven't already.
