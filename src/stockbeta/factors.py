@@ -2,8 +2,12 @@
 
 from typing import Optional, Union
 from datetime import datetime
+import warnings
 import pandas as pd
 import pandas_datareader.data as web  # type: ignore
+
+# Suppress the specific FutureWarning about date_parser
+warnings.filterwarnings('ignore', category=FutureWarning, message='.*date_parser.*')
 
 def load_factors(
     start: Optional[Union[str, datetime]] = None,
