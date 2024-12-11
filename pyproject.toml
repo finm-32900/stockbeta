@@ -26,7 +26,11 @@ classifiers = [
 ]
 dependencies = [
   "pandas-datareader>=0.10.0",
-  "pandas>=1.0.0"
+  "pandas>=1.0.0",
+  "fastparquet",
+  "pyarrow",
+  "numpy",
+  "yfinance",
 ]
 
 [project.urls]
@@ -63,3 +67,9 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.hatch.build]
+include = [
+    "stockbeta/data/**"
+]
+
