@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stockbeta"
+dynamic = ["version"]
+description = 'Example Python package for teaching/learning'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["Example", "Teaching", "Finance"]
+authors = [
+  { name = "Jeremiah Bejarano", email = "jbejarano@uchicago.edu" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "pandas-datareader>=0.10.0"
+]
+
+[project.urls]
+Documentation = "https://github.com/finm-32900/stockbeta-example#readme"
+Issues = "https://github.com/finm-32900/stockbeta-example/issues"
+Source = "https://github.com/finm-32900/stockbeta-example"
+
+[tool.hatch.version]
+path = "src/stockbeta/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/stockbeta tests}"
+
+[tool.coverage.run]
+source_pkgs = ["stockbeta", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/stockbeta/__about__.py",
+]
+
+[tool.coverage.paths]
+stockbeta = ["src/stockbeta", "*/stockbeta/src/stockbeta"]
+tests = ["tests", "*/stockbeta/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
