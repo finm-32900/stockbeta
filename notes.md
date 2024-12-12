@@ -303,6 +303,54 @@ I chose this example because I wanted to demonstrate how to do the following thi
 - Add the ability to use the functions in the package as a library or from the command line.
 - Ship datasets with the package.
 
+### CLI Development: Click vs. argparse
+
+The `stockbeta` package also demonstrates how to create a command-line interface (CLI) using [Click](https://click.palletsprojects.com/), a modern Python package for creating beautiful command line interfaces. While Python's standard library includes [argparse](https://docs.python.org/3/library/argparse.html) for CLI development, we chose Click for several reasons:
+
+#### Why Click Over argparse?
+
+- **Decorator-Based Interface**: Click uses decorators to define commands and options, resulting in more readable and maintainable code:
+  ```python
+  # Click example
+  @click.command()
+  @click.option('--ticker', required=True, help='Stock ticker symbol')
+  def analyze(ticker):
+      """Analyze a stock's factor exposures."""
+      pass
+
+  # Equivalent argparse example
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--ticker', required=True, help='Stock ticker symbol')
+  args = parser.parse_args()
+  ```
+
+- **Automatic Help Generation**: Click automatically generates well-formatted help messages and documentation.
+- **Nested Command Support**: Easily create complex CLI applications with subcommands (similar to `git commit`, `git push`).
+- **Type Conversion**: Automatic type conversion and validation of input parameters.
+- **Better Error Messages**: More user-friendly error messages out of the box.
+
+#### Why argparse is Still Relevant
+
+While we chose Click for `stockbeta`, argparse remains important to understand:
+- It's part of Python's standard library (no additional dependencies)
+- Many existing projects use it
+- It's more than adequate for simple CLI needs
+- It has been the standard since Python 2.7
+
+#### Modern CLI Development
+
+The trend in Python CLI development has moved towards more sophisticated tools like Click because:
+- They reduce boilerplate code
+- They encourage better CLI design practices
+- They provide better developer experience
+- They often result in better user experience
+
+For `stockbeta`, Click allows us to create an intuitive interface that makes it easy for users to:
+- Specify date ranges for analysis
+- Select specific stocks or factors
+- Control output formats
+- Access help and documentation
+
 ## Developing a Python Package with Hatch
 
 ### 1. Overview of Hatch
