@@ -73,7 +73,33 @@ Understanding Python packaging is useful because it enables code sharing and reu
 
 ### Evolution of Python Packaging
 
-The Python packaging ecosystem has evolved significantly over the years:
+The Python packaging ecosystem has evolved significantly over the years. The landscape has evolved significantly:
+
+1. **Early Days (pre-2012)**:
+   - Pip struggled with binary distributions
+   - Scientific packages were difficult to install
+   - No standardized solution for non-Python dependencies
+
+2. **Conda Era (2012-present)**:
+   - Solved binary distribution problems
+   - Provided consistent environments across platforms
+   - Became standard in scientific computing
+
+3. **Modern Convergence**:
+   - Pip's wheel format (introduced 2012) solved many binary distribution issues
+   - Build tools like `cibuildwheel` made it easier to distribute compiled packages
+   - Conda remains valuable for:
+     - Cross-language dependencies
+     - System-level packages
+     - Consistent scientific computing environments
+
+Today, the choice between pip and conda often depends on:
+- Whether you need non-Python dependencies
+- The specific packages you're using
+- Your platform requirements
+- Performance considerations
+
+
 
 #### Historical Context
 
@@ -230,6 +256,8 @@ Some criticisms of Conda include:
 While Pixi is promising, it's still relatively new (launched 2023) and the ecosystem is evolving. Some users report that certain edge cases aren't yet handled as well as in Conda.
 ```
 
+## New Patterns in Modern Package Management
+
 ### Project-Based Package Management vs Environment-Based Package Management
 
 - **Project-Based Package Management**: This is the approach used by Hatch, Poetry, and PDM. It involves:
@@ -315,33 +343,65 @@ However, both approaches remain valid, and the choice often depends on specific 
 - Web development typically uses project-based tools
 - Data science might use a mix of both approaches
 
-### Evolution of Package Management
 
-The landscape has evolved significantly:
+### Package Metadata and Version Management
 
-1. **Early Days (pre-2012)**:
-   - Pip struggled with binary distributions
-   - Scientific packages were difficult to install
-   - No standardized solution for non-Python dependencies
+Modern Python packaging tools handle metadata and versioning differently:
 
-2. **Conda Era (2012-present)**:
-   - Solved binary distribution problems
-   - Provided consistent environments across platforms
-   - Became standard in scientific computing
+- **Traditional Approach (setup.py)**:
+  ```python
+  setup(
+      name="mypackage",
+      version="0.1.0",
+      author="Your Name",
+      description="Package description"
+  )
+  ```
 
-3. **Modern Convergence**:
-   - Pip's wheel format (introduced 2012) solved many binary distribution issues
-   - Build tools like `cibuildwheel` made it easier to distribute compiled packages
-   - Conda remains valuable for:
-     - Cross-language dependencies
-     - System-level packages
-     - Consistent scientific computing environments
+- **Modern Approach (pyproject.toml)**:
+  ```toml
+  [project]
+  name = "mypackage"
+  version = "0.1.0"
+  authors = [{name = "Your Name", email = "your.email@example.com"}]
+  description = "Package description"
+  ```
 
-Today, the choice between pip and conda often depends on:
-- Whether you need non-Python dependencies
-- The specific packages you're using
-- Your platform requirements
-- Performance considerations
+Key advantages of the modern approach:
+- Declarative configuration (no executable code)
+- Standardized format across tools
+- Better security (no arbitrary code execution during build)
+- Easier to parse and validate
+- Single source of truth for package metadata
+
+### Development Dependencies
+
+Modern packaging tools provide better separation of development and runtime dependencies:
+
+```toml
+[project]
+dependencies = [
+    "requests>=2.28.0",
+    "pandas>=1.5.0"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0"
+]
+dev = [
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0"
+]
+```
+
+This separation:
+- Keeps production installations lean
+- Makes development setup reproducible
+- Clearly documents tool requirements
+- Allows selective installation of extras
 
 ## Choosing a Packaging Tool
 
@@ -547,7 +607,23 @@ For `stockbeta`, Click allows us to create an intuitive interface that makes it 
 - Control output formats
 - Access help and documentation
 
+#### Editable Installs
 
+During development, you often want changes to your source code to be immediately reflected without reinstalling the package. Modern tools support this through editable installs:
+
+```console
+# Traditional pip approach
+pip install -e .
+
+# Hatch approach (automatic in development shell)
+hatch shell
+```
+
+Benefits of editable installs:
+- Immediate reflection of code changes
+- No need to reinstall after each modification
+- Maintains proper package imports
+- Preserves development tool configurations
 
 ### Publishing Packages to PyPI
 
