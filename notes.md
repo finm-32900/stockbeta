@@ -1,10 +1,19 @@
 # Writing and Publishing Your Own Python Packages
 
+**Objectives of This Chapter**
+
+This chapter introduces the process of writing Python packages using a tool called [**Hatch**](https://hatch.pypa.io/), an official, standards-based Python packaging tool maintained by the Python Packaging Authority ([PyPA](https://www.pypa.io/)). We will:
+
+1. Discuss the fundamental components of a Python package.
+2. Demonstrate how to use Hatch for package development and management.
+3. Together we will walk through the development of an example package, `stockbeta`, designed for quantitative finance applications. We will develop this package together from scratch and learn how to publish it to PyPI.
+4. Explore how this knowledge can be applied to real-world scenarios in the financial industry.
+
 ## Introduction
 
 ### Motivation: Why Write Python Packages?
 
-The ability to automate workflows and develop reusable tools is essential. Financial institutions and companies rely heavily on custom libraries to handle complex calculations, manipulate large datasets, and implement models that are central to their decision-making processes. Python has emerged as a dominant language in the finance industry, and understanding how to package and distribute Python libraries is a critical skill.
+Financial institutions and companies rely heavily on custom libraries to handle complex calculations, manipulate large datasets, and implement models that are central to their decision-making processes. Python has emerged as a dominant language in the finance industry, and understanding how to package and distribute Python libraries is a critical skill.
 
 Knowing how to write Python packages provides several key benefits:
 
@@ -14,14 +23,53 @@ Knowing how to write Python packages provides several key benefits:
 - **Open Source Contributions**: Python packages are the building blocks of the open-source ecosystem. Understanding the packaging process allows you to contribute to or build on existing tools.
 - **Scalability**: Developing modular code within a package structure helps scale analytics workflows and integrates with corporate software pipelines.
 
-### Objectives of This Chapter
+Let's explore several concrete scenarios where understanding Python packaging is valuable:
 
-This chapter introduces the process of writing Python packages using a tool called [**Hatch**](https://hatch.pypa.io/), which is maintained by the Python Packaging Authority ([PyPA](https://www.pypa.io/)). We will:
+1. **Publishing Open-Source Packages**
+   - As a student or developer, you can share your tools with the global Python community through PyPI
+   - Example: You build a machine learning utility that simplifies data preprocessing, then publish it so others can benefit
+   - In your particular case as a student, developing open source packages to contribute, e.g., via PyPI has several benefits: 
+     - Demonstrates practical Python skills to potential employers
+     - Shows ability to write maintainable, documented code
+     - Builds your professional portfolio
+     - Provides experience with modern development workflows (CI/CD, documentation, testing)
 
-1. Discuss the fundamental components of a Python package.
-2. Demonstrate how to use Hatch for package development and management.
-3. Walk through an example package, `stockbeta`, designed for quantitative finance applications.
-4. Explore how this knowledge can be applied to real-world scenarios in the financial industry.
+2. **Corporate Private Package Repositories**
+   - Many companies maintain internal package repositories for proprietary code
+   - Business cases:
+     - Protect intellectual property (e.g., proprietary trading algorithms)
+     - Share internal tools across teams without exposing them publicly
+     - Ensure code consistency across different projects (e.g., when multiple teams need to access the same database, having a shared package with standardized connection methods ensures everyone follows security protocols and best practices, rather than each team implementing their own potentially inconsistent solutions)
+     - Using a share package repository makes it easier to manage dependencies and ensure that all teams are using the same version of a package. For example, it can otherwise be hard to make sure that everyone is using the same version of an internal package, e.g., `yourcompanycustompythonpackage`.
+   - Example: A financial firm maintains a private package with
+     - Custom risk calculation models
+     - Company-specific data processing pipelines
+     - Standardized reporting templates
+     - Internal API clients
+
+3. **Academic and Research Distribution**
+   - Universities and research labs package their algorithms and models
+   - Benefits:
+     - Makes research reproducible
+     - Allows other researchers to build on your work
+     - Simplifies collaboration between institutions
+   - Example: A research group packages their novel optimization algorithm, allowing others to:
+     - Verify their results
+     - Apply the algorithm to new problems
+     - Cite the work in academic papers
+
+4. **Microservices and DevOps**
+   - Modern software architectures often use internal packages to:
+     - Share common code between microservices
+     - Standardize logging, monitoring, and security practices
+     - Manage configuration and deployment utilities
+   - Example: A tech company maintains internal packages for:
+     - Service authentication and authorization
+     - Standardized logging and metrics collection
+     - Database connection management
+     - Common API patterns and middleware
+
+Understanding Python packaging is useful because it enables code sharing and reuse at any scale - from individual developers to large organizations. Whether you're building your career, contributing to open source, or developing enterprise software, packaging is a fundamental skill in the Python ecosystem.
 
 ### Evolution of Python Packaging
 
@@ -72,6 +120,21 @@ The Python packaging ecosystem has evolved significantly over the years:
   - Coordinates between different packaging tools and projects
   - Ensures security and reliability of Python's package ecosystem
   - Manages [PyPI](https://pypi.org/) (Python Package Index), the official package repository
+
+#### The Rise of Binary Distribution and Scientific Computing
+
+The landscape evolved significantly to address challenges in distributing scientific Python packages:
+
+1. **Early Challenges (pre-2012)**:
+   - Pip struggled with binary distributions (e.g., installing NumPy or SciPy often failed because pip couldn't handle the pre-compiled C extensions, requiring users to have the correct compiler and development headers installed). Thus, scientific packages were difficult to install due to compilation requirements
+   - No standardized solution for non-Python dependencies. For example, C libraries like OpenBLAS (used for fast linear algebra), Fortran compilers for scientific packages, or system dependencies like CUDA for GPU computing had to be manually installed by users, making it difficult to ensure consistent installations across different machines.
+   - Complex build dependencies and platform-specific configurations
+
+2. **Solutions and Progress (2012-present)**:
+   - Introduction of the wheel format solved many binary distribution issues
+   - Build tools like `cibuildwheel` simplified compiled package distribution
+   - Conda emerged as a comprehensive solution for scientific computing. Conda was created by Continuum Analytics (now Anaconda Inc.) in 2012 to solve the "dependency hell" of scientific Python packages by providing language-agnostic package management, handling both Python and non-Python dependencies like compilers and system libraries in one tool. Most students in the data science field are familiar with Conda, as it is packaged with the Anaconda distribution and it is the standard for scientific computing in Python.
+   - Modern build systems improved cross-platform compatibility.
 
 #### Modern Packaging Tools
 
@@ -167,7 +230,7 @@ Some criticisms of Conda include:
 While Pixi is promising, it's still relatively new (launched 2023) and the ecosystem is evolving. Some users report that certain edge cases aren't yet handled as well as in Conda.
 ```
 
-#### Project-Based Package Management vs Environment-Based Package Management
+### Project-Based Package Management vs Environment-Based Package Management
 
 - **Project-Based Package Management**: This is the approach used by Hatch, Poetry, and PDM. It involves:
   - A single configuration file (`pyproject.toml`) that defines both project metadata and dependencies
@@ -252,7 +315,7 @@ However, both approaches remain valid, and the choice often depends on specific 
 - Web development typically uses project-based tools
 - Data science might use a mix of both approaches
 
-#### Evolution of Package Management
+### Evolution of Package Management
 
 The landscape has evolved significantly:
 
@@ -280,7 +343,7 @@ Today, the choice between pip and conda often depends on:
 - Your platform requirements
 - Performance considerations
 
-#### Choosing a Packaging Tool
+## Choosing a Packaging Tool
 
 While this chapter focuses on Hatch, consider these factors when choosing a tool:
 
@@ -291,7 +354,7 @@ While this chapter focuses on Hatch, consider these factors when choosing a tool
 
 ## Example Package: `stockbeta`
 
-The `stockbeta` package is a practical demonstration of how to write a Python library for quantitative finance. This package performs factor-based analysis of stock returns, leveraging the Fama-French Three-Factor Model. It provides tools for:
+The `stockbeta` package (see [PyPI](https://test.pypi.org/project/stockbeta/#description) and [GitHub](https://github.com/finm-32900/stockbeta-example)) is a practical demonstration of how to write a Python library for quantitative finance. This package performs factor-based analysis of stock returns, leveraging the Fama-French Three-Factor Model. It provides tools for:
 
 1. Loading and manipulating factor data (e.g., market returns, size, and value factors).
 2. Analyzing the factor exposures of individual stocks using their historical return data.
@@ -302,6 +365,139 @@ I chose this example because I wanted to demonstrate how to do the following thi
 - Add a command-line interface (CLI) to the package.
 - Add the ability to use the functions in the package as a library or from the command line.
 - Ship datasets with the package.
+
+
+### Getting Started: Using `stockbeta`
+
+To get started, first take a look at the project page on [Testing.PyPI](https://test.pypi.org/project/stockbeta/) and then follow the instructions below.
+
+Install the package from Testing.PyPI:
+
+```console
+pip install -i https://test.pypi.org/simple/ stockbeta
+```
+
+#### Loading Factor Data
+
+Demonstrate how to load factor data using the library:
+
+```python
+import stockbeta
+
+# Load all available daily factor data
+factors = stockbeta.load_factors()
+```
+
+#### Analyzing Stock Returns
+
+Show how to analyze stock returns using both the CLI and the Python library interface:
+
+**CLI Example**
+```console
+python -m stockbeta.cli --ticker AAPL --start 2020-01-01 --end 2023-12-31
+```
+
+**Library Example**
+```python
+import stockbeta
+import yfinance as yf
+
+# Get stock data
+stock_data = yf.download("AAPL", start="2020-01-01", end="2023-12-31")
+stock_returns = stock_data["Adj Close"].pct_change().dropna()
+
+# Load factors and calculate exposures
+factors = stockbeta.load_factors(start="2020-01-01", end="2023-12-31")
+exposures = stockbeta.calculate_factor_exposures(stock_returns, factors)
+
+print(exposures)
+```
+
+### Preview of the Development Workflow with Hatch
+
+Now, before we start developing a package from scratch, let's take a look at how to modify the `stockbeta` package. To do this, we'll review the development workflow with Hatch.
+
+1. Cloning the repository:
+```console
+git clone https://github.com/finm-32900/stockbeta-example.git
+cd stockbeta-example
+```
+
+2. Activating the Hatch shell environment:
+```console
+hatch shell
+```
+
+3. Running tests and making edits:
+```console
+hatch test           # Run all tests
+hatch test -v       # Run tests with verbose output
+hatch test --cover  # Run tests with coverage
+```
+
+4. Formatting and linting code:
+```console
+hatch fmt           # Format code
+hatch fmt --check   # Check formatting
+```
+
+5. Deploying updates to PyPI:
+
+This following command won't work for you because you haven't set up your PyPI credentials and because you're not on the `stockbeta` team. In any case, I use GitHub Actions to publish the package to TestPyPI.
+
+```console
+hatch publish 
+```
+
+```{note} Eample
+As an example, let's now make our own quick modification to the `stockbeta` package and verify that it works for us.
+```
+
+## Developing a Python Package with Hatch
+
+Now that we've seen a short preview of the development workflow with Hatch, let's take a look at the overview of the hatch development workflow. 
+
+### Workflow Overview
+
+1. Overview of Hatch
+
+Hatch is a modern Python packaging tool that simplifies the development, testing, and deployment of Python packages. Its features include:
+
+- **Environment Management**: Automatically creates isolated development environments with dependencies installed.
+- **Simplified Configuration**: Uses a single `pyproject.toml` file for project metadata.
+- **Command Line Tools**: Provides commands for common tasks such as running tests, checking types, and formatting code.
+
+2. Setting Up the Package
+
+- Directory structure and organization.
+- Creating a `pyproject.toml` file.
+- Initializing a development environment with Hatch.
+
+3. Adding Functionality
+
+- Writing core modules: example implementation of factor data loading and factor analysis.
+- Packaging datasets: including sample data with the package.
+- Creating a command-line interface (CLI) for ease of use.
+
+4. Testing and Quality Assurance
+
+- Writing unit tests with `pytest`.
+- Running tests with Hatch.
+- Configuring type checking and linting.
+
+5. Documenting the Package
+
+- Writing a README file to introduce the package and explain its usage.
+- Generating API documentation.
+
+6. Publishing to PyPI
+
+- Steps to register the package on PyPI.
+- Uploading the package using Hatch.
+
+### Developing a Python Package from Scratch
+
+TODO
 
 ### CLI Development: Click vs. argparse
 
@@ -351,91 +547,105 @@ For `stockbeta`, Click allows us to create an intuitive interface that makes it 
 - Control output formats
 - Access help and documentation
 
-## Developing a Python Package with Hatch
 
-### 1. Overview of Hatch
 
-Hatch is a modern Python packaging tool that simplifies the development, testing, and deployment of Python packages. Its features include:
+### Publishing Packages to PyPI
 
-- **Environment Management**: Automatically creates isolated development environments with dependencies installed.
-- **Simplified Configuration**: Uses a single `pyproject.toml` file for project metadata.
-- **Command Line Tools**: Provides commands for common tasks such as running tests, checking types, and formatting code.
+Package distribution is a crucial part of the Python ecosystem. While private package repositories exist for organizations that want to keep their code proprietary, the Python Package Index (PyPI) serves as the primary public repository for Python packages. When you run `pip install some-package`, pip typically fetches that package from PyPI.
 
-### 2. Setting Up the Package
+#### Understanding PyPI and TestPyPI
 
-- Directory structure and organization.
-- Creating a `pyproject.toml` file.
-- Initializing a development environment with Hatch.
+PyPI (Python Package Index) is often called the "Cheese Shop" - a reference to a Monty Python sketch. It serves as the official repository for Python packages, hosting over 400,000 projects. However, publishing directly to PyPI without testing can be risky. This is where TestPyPI comes in.
 
-### 3. Adding Functionality
+TestPyPI is a separate instance of the Python Package Index that allows developers to practice package distribution without affecting the main PyPI repository. It's particularly valuable for:
 
-- Writing core modules: example implementation of factor data loading and factor analysis.
-- Packaging datasets: including sample data with the package.
-- Creating a command-line interface (CLI) for ease of use.
+1. **Educational Purposes**: Learning the publishing workflow without risk
+2. **Testing**: Verifying package metadata, README rendering, and installation
+3. **CI/CD Development**: Setting up and testing automated release workflows
 
-### 4. Testing and Quality Assurance
+For example, to install a package from TestPyPI:
 
-- Writing unit tests with `pytest`.
-- Running tests with Hatch.
-- Configuring type checking and linting.
-
-### 5. Documenting the Package
-
-- Writing a README file to introduce the package and explain its usage.
-- Generating API documentation.
-
-### 6. Publishing to PyPI
-
-- Steps to register the package on PyPI.
-- Uploading the package using Hatch.
-
-## Case Study: Using `stockbeta`
-
-### Loading Factor Data
-
-Demonstrate how to load factor data using the library:
-
-```python
-import stockbeta
-
-# Load all available daily factor data
-factors = stockbeta.load_factors()
-```
-
-### Analyzing Stock Returns
-
-Show how to analyze stock returns using both the CLI and the Python library interface:
-
-#### CLI Example
 ```console
-python -m stockbeta.cli --ticker AAPL --start 2020-01-01 --end 2023-12-31
+pip install --index-url https://test.pypi.org/simple/ your-package-name
 ```
 
-#### Library Example
+#### Automated Releases with GitHub Actions
+
+Modern Python package development often leverages CI/CD pipelines for automated releases. In the `stockbeta` package, we use GitHub Actions to automate the release process to TestPyPI. The workflow is triggered by git tags:
+
+```yaml
+strategy:
+  matrix:
+    python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+```
+
+This configuration means:
+1. The workflow triggers when we push a tag starting with 'v' (e.g., v0.1.0)
+2. It uses Trusted Publishing with PyPI (via the `id-token: write` permission)
+3. It builds and publishes the package automatically
+
+#### Version Management and Common Issues
+
+Package versioning is critical in Python distribution. PyPI enforces strict version uniqueness - once a version is published, it can never be reused, even if deleted. This policy prevents supply chain attacks but can cause issues during development.
+
+Common versioning patterns include:
+- Release versions: `0.1.0`, `1.0.0`
+- Development versions: `0.1.0.dev1`, `0.1.0.dev20231225`
+- Post-releases: `0.1.0.post1`
+- Release candidates: `0.1.0rc1`
+
+A real-world example we encountered with `stockbeta`:
 ```python
-import stockbeta
-import yfinance as yf
+# Initial release
+version = "0.0.1"
 
-# Get stock data
-stock_data = yf.download("AAPL", start="2020-01-01", end="2023-12-31")
-stock_returns = stock_data["Adj Close"].pct_change().dropna()
+# Development builds (automated via GitHub Actions)
+version = "0.0.2.dev42"  # where 42 is the build number
 
-# Load factors and calculate exposures
-factors = stockbeta.load_factors(start="2020-01-01", end="2023-12-31")
-exposures = stockbeta.calculate_factor_exposures(stock_returns, factors)
-
-print(exposures)
+# Cannot reuse "0.0.2" if it was ever published, even if deleted
+# Must use either:
+version = "0.0.3"  # increment version
+# or
+version = "0.0.2.post1"  # post-release
 ```
 
-### Development Workflow with Hatch
+#### Security Considerations
 
-Explain the development process:
+Publishing packages requires careful attention to security:
 
-1. Cloning the repository.
-2. Activating the Hatch shell environment.
-3. Running tests and making edits.
-4. Formatting and linting code.
-5. Deploying updates to PyPI.
+1. **Trusted Publishing**: Modern PyPI supports keyless authentication using OpenID Connect, eliminating the need for API tokens.
+
+2. **Package Signing**: Tools like `sigstore` (used by PyPI) help verify package authenticity.
+
+3. **Version Immutability**: Once published, package versions cannot be modified or reused, preventing supply chain attacks.
+
+4. **Access Control**: Use organization accounts and role-based access for team projects.
+
+#### Best Practices for Package Publishing
+
+1. **Always Test on TestPyPI First**
+   - Verify package metadata
+   - Check README rendering
+   - Test installation process
+
+2. **Use Semantic Versioning**
+   - Major.Minor.Patch (e.g., 1.2.3)
+   - Increment appropriately based on changes
+
+3. **Automate Releases**
+   - Use CI/CD pipelines (like GitHub Actions)
+   - Automate version bumping
+   - Include automated tests before publishing
+
+4. **Documentation**
+   - Maintain clear installation instructions
+   - Document version compatibility
+   - Keep a detailed changelog
+
+5. **Distribution Format**
+   - Build both source distributions (.tar.gz) and wheels (.whl)
+   - Use tools like `hatch` or `build` for consistent builds
+
 
 ### The Importance of Matrix Testing
 

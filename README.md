@@ -232,8 +232,7 @@ hatch fmt
 Hatch's formatter supports configuration options such as quote style, indent style, and line width through the project's configuration file. However, it's worth noting that if you need to both sort imports and format code, you'll need to run two commands:
 
 ```bash
-hatch fmt --check  # for formatting
-hatch lint        # for import sorting and other linting
+hatch fmt --check  # for just checking formatting
 ```
 
 ### Development Tips
