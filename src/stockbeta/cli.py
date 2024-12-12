@@ -1,8 +1,8 @@
-import argparse
 import logging
 
+import click
 import pandas as pd
-import yfinance as yf
+import yfinance as yf  # type: ignore
 
 from stockbeta.core import calculate_factor_exposures, load_archived_data
 from stockbeta.factors import load_factors
@@ -27,23 +27,22 @@ def format_report(ticker: str, stats: dict) -> str:
     return "\n".join(report)
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Calculate stock factor exposures and statistics.")
-    parser.add_argument("--ticker", required=True, help="Stock ticker symbol")
-    parser.add_argument("--start", default="2021-01-01", help="Start date (YYYY-MM-DD)")
-    parser.add_argument("--end", default="2021-12-31", help="End date (YYYY-MM-DD)")
-    args = parser.parse_args()
-
+@click.command()
+@click.option("--ticker", required=True, help="Stock ticker symbol")
+@click.option("--start", default="2021-01-01", help="Start date (YYYY-MM-DD)")
+@click.option("--end", default="2021-12-31", help="End date (YYYY-MM-DD)")
+def main(ticker: str, start: str, end: str):
+    """Calculate stock factor exposures and statistics."""
     # Load factor data
     try:
-        factors = load_factors(start=args.start, end=args.end)
+        factors = load_factors(start=start, end=end)
     except (ConnectionError, ValueError) as e:
         logger.warning("Error loading online data: %s", e)
         logger.info("Falling back to archived data...")
         factors = load_archived_data()
 
     # Download stock data
-    stock_data = yf.download(args.ticker, start=args.start, end=args.end, progress=False)
+    stock_data = yf.download(ticker, start=start, end=end, progress=False)
     stock_returns = stock_data["Adj Close"].pct_change().dropna()
 
     # Align dates
@@ -53,7 +52,7 @@ def main():
 
     # Calculate statistics and generate report
     stats = calculate_factor_exposures(stock_returns, factors)
-    logger.info(format_report(args.ticker, stats))
+    logger.info(format_report(ticker, stats))
 
 
 if __name__ == "__main__":

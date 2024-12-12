@@ -3,7 +3,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/stockbeta.svg)](https://pypi.org/project/stockbeta)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stockbeta.svg)](https://pypi.org/project/stockbeta)
 
------
+A Python package for analyzing stock factor exposures using Fama-French factors.
 
 ## Table of Contents
 
@@ -24,7 +24,18 @@
 pip install stockbeta
 ```
 
-## Usage
+## Quick Start
+
+```python
+import stockbeta
+
+# Load factor data and analyze a stock
+factors = stockbeta.load_factors(start='2020-01-01')
+analysis = stockbeta.analyze_stock('AAPL', factors)
+print(f"Market Beta: {analysis['market_beta']:.2f}")
+```
+
+## Usage Guide
 
 ### Loading Factor Data
 
@@ -66,10 +77,11 @@ You can analyze a stock's factor exposures in two ways:
 
 #### Command Line Interface
 
-The package provides a CLI tool for quick factor analysis:
+The package provides a CLI tool for quick factor analysis. After installation,
+you can run it directly:
 
 ```console
-python -m stockbeta.cli --ticker AAPL --start 2020-01-01 --end 2023-12-31
+stockbeta --ticker AAPL --start 2020-01-01 --end 2023-12-31
 ```
 
 This will output a report like:
@@ -84,6 +96,16 @@ Factor Exposures:
 Market Beta: 1.142
 Size Factor (SMB) Beta: -0.234
 Value Factor (HML) Beta: -0.456
+```
+You can install it from the local directory like this:
+```
+pip install -e .
+```
+
+I recommend using the Hatch shell environment to install the package.
+```
+hatch shell
+pip install -e .
 ```
 
 #### Python Library Usage

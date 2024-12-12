@@ -31,7 +31,11 @@ dependencies = [
   "pyarrow",
   "numpy",
   "yfinance",
+  "click",
 ]
+
+[project.scripts]
+stockbeta = "stockbeta.cli:main"
 
 [project.urls]
 Documentation = "https://github.com/finm-32900/stockbeta-example#readme"
@@ -69,7 +73,8 @@ exclude_lines = [
 ]
 
 [tool.hatch.build]
+packages = ["src/stockbeta"]
 include = [
-    "stockbeta/data/**"
+    "src/stockbeta/data/**"
 ]
 
