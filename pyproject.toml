@@ -7,7 +7,7 @@ name = "stockbeta"
 dynamic = ["version"]
 description = 'Example Python package for teaching/learning'
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = "MIT"
 keywords = ["Example", "Teaching", "Finance"]
 authors = [
@@ -16,8 +16,6 @@ authors = [
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -46,12 +44,17 @@ Source = "https://github.com/finm-32900/stockbeta-example"
 path = "src/stockbeta/__about__.py"
 
 [tool.hatch.envs.types]
-extra-dependencies = [
+dependencies = [
   "mypy>=1.0.0",
-  "pandas-stubs>=1.0.0",
+  "pandas-stubs",
+  "types-setuptools",
+  "pytest-stubs",
+  "types-openpyxl",
+  "types-python-dateutil"
 ]
+
 [tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/stockbeta tests}"
+check = "mypy --install-types --non-interactive {args:src/ tests/}"
 
 [tool.coverage.run]
 source_pkgs = ["stockbeta", "tests"]
@@ -83,3 +86,32 @@ filterwarnings = [
     "ignore::DeprecationWarning:pandas_datareader.*:",
     "ignore::FutureWarning"
 ]
+
+[tool.hatch.envs.test]
+dependencies = [
+  "pytest>=7.0",
+  "pytest-cov",
+  "setuptools",
+  "wheel",
+  "pandas",
+  "pandas-datareader",
+  "numpy",
+  "importlib_resources>=5.0.0",
+  "pyarrow",
+  "fastparquet"
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:tests}"
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true

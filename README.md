@@ -2,6 +2,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/stockbeta.svg)](https://pypi.org/project/stockbeta)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stockbeta.svg)](https://pypi.org/project/stockbeta)
+[![Tests](https://github.com/finm-32900/stockbeta-example/actions/workflows/test.yml/badge.svg)](https://github.com/finm-32900/stockbeta-example/actions/workflows/test.yml)
 
 A Python package for analyzing stock factor exposures using Fama-French factors.
 
@@ -181,6 +182,15 @@ hatch shell
 ```
 
 This will automatically install all dependencies and the package in editable mode.
+
+> **Educational Note**: This package demonstrates why matrix testing across Python versions is important. The tests will fail on Python 3.8 because we use `importlib.resources.files`, which was introduced in Python 3.9. This is a common issue in Python development - features available in newer versions might not work in older ones. Matrix testing helps catch these compatibility issues early.
+>
+> To fix this, we could either:
+> 1. Drop support for Python 3.8
+> 2. Use a compatibility package (`importlib_resources`)
+> 3. Write version-specific code using `try`/`except`
+>
+> Each approach has its trade-offs. For learning purposes, we're keeping this issue to demonstrate real-world package development challenges.
 
 ### Running Tests
 
