@@ -6,7 +6,7 @@ import pandas as pd
 
 def load_archived_data():
     """Load archived Fama-French factor data included with the package."""
-    data_path = os.path.join(os.path.dirname(__file__), "data", "ff2factor.parquet")
+    data_path = os.path.join(os.path.dirname(__file__), "data", "ff3factors.parquet")
     return pd.read_parquet(data_path)
 
 

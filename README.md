@@ -184,9 +184,25 @@ This will automatically install all dependencies and the package in editable mod
 
 ### Running Tests
 
-To run tests:
+The package uses pytest for testing. To run tests:
+
 ```console
-hatch run test
+hatch test
+```
+
+You can also run tests with coverage:
+```console
+hatch test --cover
+```
+
+Or run specific test files:
+```console
+hatch test tests/test_easter_egg.py
+```
+
+For verbose output:
+```console
+hatch test -v
 ```
 
 ### Type Checking

@@ -78,3 +78,8 @@ include = [
     "src/stockbeta/data/**"
 ]
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:pandas_datareader.*:",
+    "ignore::FutureWarning"
+]
