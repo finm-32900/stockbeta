@@ -26,6 +26,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install hatch
       
+      - name: Update version with build number
+        run: |
+          VERSION=$(grep -Po "__version__ = \"\K[^\"]+" src/stockbeta/__about__.py)
+          echo "VERSION=${VERSION}.dev${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+          sed -i "s/__version__ = .*/__version__ = \"${VERSION}.dev${GITHUB_RUN_NUMBER}\"/" src/stockbeta/__about__.py
+    #   This will transform version numbers like this: 0.0.1 → 0.0.1.dev42
+    #     (where 42 is the GitHub Actions run number) PyPI doesn't allow you to
+    #     publish a version that already exists, so we need to increment the
+    #     version number.  
+
       - name: Build package
         run: hatch build
       
