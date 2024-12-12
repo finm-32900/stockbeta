@@ -1,8 +1,6 @@
 import pandas as pd
-import pytest
 
-from stockbeta import load_archived_data, load_factors
-from stockbeta.factors import web  # Import web to check if pandas_datareader is available
+from stockbeta import load_archived_data
 
 
 def test_load_archived_data():

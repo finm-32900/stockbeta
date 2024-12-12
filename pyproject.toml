@@ -48,7 +48,6 @@ dependencies = [
   "mypy>=1.0.0",
   "pandas-stubs",
   "types-setuptools",
-  "pytest-stubs",
   "types-openpyxl",
   "types-python-dateutil"
 ]

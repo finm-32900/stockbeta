@@ -2,7 +2,7 @@ import logging
 
 import click
 import pandas as pd
-import yfinance as yf  # type: ignore
+import yfinance as yf
 
 from stockbeta.core import calculate_factor_exposures, load_archived_data
 from stockbeta.factors import load_factors
