@@ -1,4 +1,4 @@
-name: Release on Test PyPI
+name: Release Development Build on Test PyPI
 
 on:
   push:

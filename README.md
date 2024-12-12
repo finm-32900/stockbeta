@@ -1,6 +1,6 @@
 # stockbeta
 
-[![PyPI - Version](https://img.shields.io/badge/TestPyPI-v0.0.1-blue?logo=pypi)](https://test.pypi.org/project/stockbeta)
+[![PyPI - Version](https://img.shields.io/badge/TestPyPI-v0.0.2-blue?logo=pypi)](https://test.pypi.org/project/stockbeta)
 [![PyPI - Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue?logo=python)](https://test.pypi.org/project/stockbeta)
 [![Tests](https://github.com/finm-32900/stockbeta-example/actions/workflows/test.yml/badge.svg)](https://github.com/finm-32900/stockbeta-example/actions/workflows/test.yml)
 
