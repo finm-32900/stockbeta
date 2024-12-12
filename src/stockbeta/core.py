@@ -6,8 +6,13 @@ import pandas as pd
 
 def load_archived_data():
     """Load archived Fama-French factor data included with the package."""
-    data_path = os.path.join(os.path.dirname(__file__), "data", "ff3factors.parquet")
-    return pd.read_parquet(data_path)
+    data_path = os.path.join(os.path.dirname(__file__), "data", "ff3factors.csv")
+    return pd.read_csv(
+        data_path,
+        parse_dates=["Date"],
+        index_col="Date",
+        dtype={"Mkt-RF": float, "SMB": float, "HML": float, "RF": float},
+    )
 
 
 def calculate_beta(stock_returns: pd.Series, factor_returns: pd.Series) -> float:

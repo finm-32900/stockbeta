@@ -25,8 +25,6 @@ classifiers = [
 dependencies = [
   "pandas-datareader>=0.10.0",
   "pandas>=1.0.0",
-  "fastparquet",
-  "pyarrow",
   "numpy",
   "yfinance",
   "click",
@@ -94,8 +92,6 @@ dependencies = [
   "pandas-datareader",
   "numpy",
   "importlib_resources>=5.0.0",
-  "pyarrow",
-  "fastparquet"
 ]
 
 [tool.hatch.envs.test.scripts]
