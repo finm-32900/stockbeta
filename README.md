@@ -143,6 +143,19 @@ print(f"Value Factor Beta: {stats['hml_beta']:.3f}")
 print(f"Annual Sharpe Ratio: {stats['sharpe_ratio']:.2f}")
 ```
 
+### Easter Eggs 🥚
+
+The package includes some fun easter eggs! Try this:
+
+```python
+from stockbeta import easter_egg
+
+df = easter_egg()
+print(df)
+```
+
+You might find some interesting numbers on special dates! 🎯 🥧 The purpose of this is to demonstrate how to ship datasets with a package.
+
 ## License
 
 `stockbeta` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
