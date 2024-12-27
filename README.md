@@ -163,81 +163,66 @@ You might find some interesting numbers on special dates! 🎯 🥧 The purpose 
 
 ## Development
 
-This package uses [Hatch](https://hatch.pypa.io/) for development and package management. Here's how to set up your development environment:
+Example Python package for teaching/learning.
 
-1. First, install Hatch if you haven't already:
-```console
-pip install hatch
+This project uses [Hatch](https://github.com/pypa/hatch) as its build backend for packaging, but you can leverage [UV](https://github.com/astral-sh/uv) for everything else (e.g., environment creation, resolution, installation, publishing, etc.).
+
+## Dynamic Version with Hatch
+
+• The project’s version is stored in src/stockbeta/__about__.py and referenced via [tool.hatch.version] in pyproject.toml.  
+• Hatch automatically infers the version from __version__ in __about__.py (so you don’t need to specify a static version in pyproject.toml).
+
+## Development Using UV
+
+Below are the notable UV commands to help you develop and maintain this project:
+
+1. Create/Update a Virtual Environment:
+
+   ```
+   uv sync
+   ```
+
+   This command will install dependencies listed in pyproject.toml (and dev dependencies if you have them separated) into a virtual environment.
+
+2. Run Tests:
+   ```
+   uv run pytest
+   ```
+   or (if you haven’t installed pytest yet):
+   ```
+   uv pip install pytest
+   uv run pytest
+   ```
+
+3. Build with Hatch via UV:
+   ```
+   uv build
+   ```
+   UV will detect that this project uses Hatchling and invoke hatchling.build under the hood. By default, you will get both a wheel and an sdist in the dist/ directory.
+
+4. Publishing (Optional):
+   If you want to publish the built artifacts:
+   ```
+   uv publish
+   ```
+   Again, UV will defer to your Hatch build system. You’ll need to configure your PyPI credentials, etc., as usual.
+
+## Linting and Formatting
+
+You can combine tools such as Ruff, Black, or Mypy with UV easily:
+
+```
+uv pip install ruff mypy
+uv run ruff check src tests
+uv run mypy src tests
 ```
 
-2. Clone the repository:
-```console
-git clone https://github.com/finm-32900/stockbeta-example.git
-cd stockbeta-example
-```
+If you still want to use Hatch’s built-in commands (like hatch fmt or hatch shell), that’s also completely compatible. UV doesn’t interfere with any existing Hatch subcommands.
 
-3. Create and activate a development environment:
-```console
-hatch shell
-```
+## Summary
 
-This will automatically install all dependencies and the package in editable mode.
+• Hatch remains your build backend for packaging.  
+• UV provides fast dependency resolution, environment management, script running, and more.  
+• You can fully preserve your existing dynamic version with src/stockbeta/__about__.py.  
 
-> **Educational Note**: This package demonstrates why matrix testing across Python versions is important. The tests will fail on Python 3.8 because we use `importlib.resources.files`, which was introduced in Python 3.9. This is a common issue in Python development - features available in newer versions might not work in older ones. Matrix testing helps catch these compatibility issues early.
->
-> To fix this, we could either:
-> 1. Drop support for Python 3.8
-> 2. Use a compatibility package (`importlib_resources`)
-> 3. Write version-specific code using `try`/`except`
->
-> Each approach has its trade-offs. For learning purposes, we're keeping this issue to demonstrate real-world package development challenges.
-
-### Running Tests
-
-The package uses pytest for testing. To run tests:
-
-```console
-hatch test
-```
-
-You can also run tests with coverage:
-```console
-hatch test --cover
-```
-
-Or run specific test files:
-```console
-hatch test tests/test_easter_egg.py
-```
-
-For verbose output:
-```console
-hatch test -v
-```
-
-### Type Checking
-
-To run type checking:
-```console
-hatch run types:check
-```
-
-### Formatting and Linting
-
-You can use `hatch fmt` to format your Python code. This uses Ruff under the hood. 
-
-```bash
-hatch fmt
-```
-Hatch's formatter supports configuration options such as quote style, indent style, and line width through the project's configuration file. However, it's worth noting that if you need to both sort imports and format code, you'll need to run two commands:
-
-```bash
-hatch fmt --check  # for just checking formatting
-```
-
-### Development Tips
-
-- The development environment created by `hatch shell` includes all necessary dependencies
-- No need to manually install in editable mode (`pip install -e .`) as Hatch handles this
-- Any changes you make to the source code will be immediately reflected when you import the package
-- To exit the Hatch shell environment, simply type `exit`
+Happy coding!

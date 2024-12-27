@@ -81,7 +81,6 @@ filterwarnings = [
 # Tell mypy to ignore errors about missing type hints in external packages.
 # This is specifically to handle the lack of type stubs in the 'pandas_datareader' and 'yfinance' packages.
 ignore_missing_imports = true
-
 [tool.hatch.envs.test]
 dependencies = [
   "pytest>=7.0",
@@ -96,3 +95,4 @@ dependencies = [
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:tests}"
+
