@@ -43,7 +43,7 @@ def main(ticker: str, start: str, end: str):
 
     # Download stock data
     stock_data = yf.download(ticker, start=start, end=end, progress=False)
-    stock_returns = stock_data["Adj Close"].pct_change().dropna()
+    stock_returns = stock_data["Close"].pct_change().dropna()
 
     # Align dates
     combined = pd.concat([stock_returns, factors], axis=1, join="inner")
