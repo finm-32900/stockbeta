@@ -52,7 +52,7 @@ def main(ticker: str, start: str, end: str):
 
     # Calculate statistics and generate report
     stats = calculate_factor_exposures(stock_returns, factors)
-    logger.info(format_report(ticker, stats))
+    print(format_report(ticker, stats))
 
 
 if __name__ == "__main__":
